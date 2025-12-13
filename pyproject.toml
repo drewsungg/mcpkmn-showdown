@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcpkmn-showdown"
-version = "1.0.1"
+version = "1.0.2"
 description = "Pokemon Showdown MCP Server - Pokemon data lookup tools for LLMs via Model Context Protocol"
 readme = "README.md"
 license = {text = "MIT"}

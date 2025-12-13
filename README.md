@@ -25,15 +25,7 @@ A **Model Context Protocol (MCP) server** that provides Pokemon Showdown data to
 
 ## Installation
 
-### Option 1: Using uvx (Recommended)
-
-The easiest way to use mcpkmn-showdown is with [uvx](https://docs.astral.sh/uv/):
-
-```bash
-uvx mcpkmn-showdown
-```
-
-### Option 2: Using pip
+### Option 1: Using pip (Recommended)
 
 ```bash
 pip install mcpkmn-showdown
@@ -43,6 +35,14 @@ Then run:
 
 ```bash
 mcpkmn-showdown
+```
+
+### Option 2: Using uvx
+
+If you have [uv](https://docs.astral.sh/uv/) installed:
+
+```bash
+uvx mcpkmn-showdown
 ```
 
 ### Option 3: From Source
@@ -65,20 +65,20 @@ Add to your Claude Desktop configuration file:
 {
   "mcpServers": {
     "pokemon": {
-      "command": "uvx",
-      "args": ["mcpkmn-showdown"]
+      "command": "mcpkmn-showdown"
     }
   }
 }
 ```
 
-Or if installed via pip:
+Or if using uvx:
 
 ```json
 {
   "mcpServers": {
     "pokemon": {
-      "command": "mcpkmn-showdown"
+      "command": "uvx",
+      "args": ["mcpkmn-showdown"]
     }
   }
 }
