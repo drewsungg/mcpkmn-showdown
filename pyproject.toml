@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcpkmn-showdown"
-version = "1.0.5"
+version = "1.0.6"
 description = "Pokemon Showdown MCP Server - Pokemon data lookup tools for LLMs via Model Context Protocol"
 readme = "README.md"
 license = {text = "MIT"}
@@ -44,12 +44,12 @@ Issues = "https://github.com/drewsungg/mcpkmn-showdown/issues"
 License = "https://github.com/drewsungg/mcpkmn-showdown?tab=MIT-1-ov-file"
 
 [project.scripts]
-mcpkmn-showdown = "src.pokemon_server:main"
+mcpkmn-showdown = "mcpkmn_showdown.pokemon_server:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["mcpkmn_showdown*"]
 
 [tool.setuptools.package-data]
-"src" = ["cache/*.json"]
-"src.cache" = ["*.json"]
+"mcpkmn_showdown" = ["cache/*.json"]
+"mcpkmn_showdown.cache" = ["*.json"]

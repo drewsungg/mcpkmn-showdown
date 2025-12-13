@@ -23,9 +23,9 @@ from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
 try:
-    from src.data_loader import get_loader
+    from mcpkmn_showdown.data_loader import get_loader
 except ImportError:
-    from data_loader import get_loader
+    from .data_loader import get_loader
 
 
 # Create server instance
