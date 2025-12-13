@@ -6,7 +6,7 @@
 
 A **Model Context Protocol (MCP) server** that provides Pokemon Showdown data to LLMs. Enables AI assistants like Claude to look up Pokemon stats, moves, abilities, items, and type matchups during conversations.
 
-![Claude Desktop using mcpkmn-showdown](./content/claude_desktop.png)
+![Claude Desktop using mcpkmn-showdown](https://raw.githubusercontent.com/drewsungg/mcpkmn-showdown/main/content/claude_desktop.png)
 
 ## What is MCP?
 
@@ -190,7 +190,7 @@ Use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) to te
 npx @modelcontextprotocol/inspector mcpkmn-showdown
 ```
 
-![MCP Inspector](content/mcp_inspector.png)
+![MCP Inspector](https://raw.githubusercontent.com/drewsungg/mcpkmn-showdown/main/content/mcp_inspector.png)
 
 ### Running Locally
 
