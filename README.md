@@ -6,6 +6,8 @@
 
 A **Model Context Protocol (MCP) server** that provides Pokemon Showdown data to LLMs. Enables AI assistants like Claude to look up Pokemon stats, moves, abilities, items, and type matchups during conversations.
 
+![Claude Desktop using mcpkmn-showdown](./content/claude_desktop.png)
+
 ## What is MCP?
 
 [Model Context Protocol](https://modelcontextprotocol.io/) is an open standard that allows AI assistants to securely access external tools and data sources. This server exposes Pokemon game data as MCP tools that Claude and other compatible LLMs can call.
@@ -38,6 +40,7 @@ pip install mcpkmn-showdown
 ```
 
 Then run:
+
 ```bash
 mcpkmn-showdown
 ```
@@ -86,6 +89,7 @@ Restart Claude Desktop after updating the config.
 ## Available Tools
 
 ### `get_pokemon`
+
 Look up a Pokemon by name. Returns base stats, types, abilities with descriptions, weight, and competitive tier.
 
 ```
@@ -94,6 +98,7 @@ Output: Pokemon stats, types, abilities, etc.
 ```
 
 ### `get_move`
+
 Look up a move by name. Returns power, accuracy, type, category, priority, effects, and full description.
 
 ```
@@ -102,6 +107,7 @@ Output: Move details including damage, accuracy, effects
 ```
 
 ### `get_ability`
+
 Look up an ability by name. Returns full description of what the ability does in battle.
 
 ```
@@ -110,6 +116,7 @@ Output: "This Pokemon is immune to Ground-type moves."
 ```
 
 ### `get_item`
+
 Look up a held item by name. Returns full description of what the item does in battle.
 
 ```
@@ -118,6 +125,7 @@ Output: Item effect description
 ```
 
 ### `get_type_effectiveness`
+
 Calculate type effectiveness multiplier for an attack against a Pokemon's types.
 
 ```
@@ -126,6 +134,7 @@ Output: "4x - Super effective!"
 ```
 
 ### `search_priority_moves`
+
 Find all moves with priority (moves that go before normal moves).
 
 ```
@@ -134,6 +143,7 @@ Output: List of priority moves (Quick Attack, Mach Punch, etc.)
 ```
 
 ### `search_pokemon_by_ability`
+
 Find all Pokemon that can have a specific ability.
 
 ```
@@ -142,6 +152,7 @@ Output: List of Pokemon with Levitate
 ```
 
 ### `list_dangerous_abilities`
+
 List abilities that can significantly affect battle outcomes.
 
 ```
@@ -153,11 +164,11 @@ Output: Levitate, Flash Fire, Volt Absorb, etc.
 
 Once configured, you can ask Claude things like:
 
-- *"What are Garchomp's stats and abilities?"*
-- *"Is Earthquake effective against Rotom-Wash?"*
-- *"What does the ability Protean do?"*
-- *"What priority moves can hit Ghost types?"*
-- *"Which Pokemon have the ability Intimidate?"*
+- _"What are Garchomp's stats and abilities?"_
+- _"Is Earthquake effective against Rotom-Wash?"_
+- _"What does the ability Protean do?"_
+- _"What priority moves can hit Ghost types?"_
+- _"Which Pokemon have the ability Intimidate?"_
 
 ## Data Sources
 
@@ -170,6 +181,16 @@ Pokemon data is sourced from [Pokemon Showdown](https://pokemonshowdown.com/), t
 - `typechart.json` - Type effectiveness chart
 
 ## Development
+
+### Testing with MCP Inspector
+
+Use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) to test the tools interactively:
+
+```bash
+npx @modelcontextprotocol/inspector mcpkmn-showdown
+```
+
+![MCP Inspector](content/mcp_inspector.png)
 
 ### Running Locally
 

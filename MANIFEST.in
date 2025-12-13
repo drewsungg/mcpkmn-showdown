@@ -1,4 +1,4 @@
 include LICENSE
 include README.md
-recursive-include cache *.json
 recursive-include src *.py
+recursive-include src/cache *.json

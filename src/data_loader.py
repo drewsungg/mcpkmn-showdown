@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-CACHE_DIR = Path(__file__).parent.parent / "cache"
+CACHE_DIR = Path(__file__).parent / "cache"
 
 
 class PokemonDataLoader:
@@ -55,19 +55,73 @@ class PokemonDataLoader:
         with open(filepath) as f:
             return json.load(f)
 
+    # Prefix -> suffix mapping for Pokemon forms
+    FORM_PREFIXES = {
+        "mega": "mega",
+        "primal": "primal",
+        "alolan": "alola",
+        "alola": "alola",
+        "galarian": "galar",
+        "galar": "galar",
+        "hisuian": "hisui",
+        "hisui": "hisui",
+        "paldean": "paldea",
+        "paldea": "paldea",
+        "gigantamax": "gmax",
+        "gmax": "gmax",
+        "black": "black",
+        "white": "white",
+        "origin": "origin",
+        "shadow": "shadow",
+    }
+
+    def _normalize_pokemon_name(self, name: str) -> str:
+        """Normalize Pokemon name, handling forms like 'Mega Charizard Y'."""
+        name_lower = name.lower().strip()
+        # Remove periods and other punctuation (for Mr. Mime, etc.)
+        name_lower = name_lower.replace(".", "").replace("'", "").replace(":", "")
+        words = name_lower.replace("-", " ").split()
+
+        if not words:
+            return ""
+
+        # Check if first word is a form prefix
+        if words[0] in self.FORM_PREFIXES:
+            suffix = self.FORM_PREFIXES[words[0]]
+
+            if len(words) == 1:
+                return suffix
+
+            pokemon_name = words[1]
+            extra_parts = "".join(words[2:]) if len(words) > 2 else ""
+
+            # Special case: "mega X Y" -> "xmegay" (for Charizard/Mewtwo forms)
+            if suffix == "mega" and extra_parts and extra_parts in ('x', 'y'):
+                return pokemon_name + "mega" + extra_parts
+
+            # Format: pokemon + suffix + extra (e.g., "tauros" + "paldea" + "combat")
+            return pokemon_name + suffix + extra_parts
+
+        # Default normalization
+        return name_lower.replace(" ", "").replace("-", "")
+
     def get_pokemon(self, name: str) -> dict | None:
         """
         Get Pokemon data by name.
 
         Args:
-            name: Pokemon name (case-insensitive)
+            name: Pokemon name (case-insensitive, handles forms like "Mega Charizard Y")
 
         Returns:
             Pokemon data dict or None if not found
         """
         self.load_all()
-        key = name.lower().replace(" ", "").replace("-", "")
+        key = self._normalize_pokemon_name(name)
         return self.pokemon.get(key)
+
+    def _normalize_name(self, name: str) -> str:
+        """Basic normalization for moves, abilities, items."""
+        return name.lower().replace(" ", "").replace("-", "").replace(".", "").replace("'", "")
 
     def get_move(self, name: str) -> dict | None:
         """
@@ -80,7 +134,7 @@ class PokemonDataLoader:
             Move data dict or None if not found
         """
         self.load_all()
-        key = name.lower().replace(" ", "").replace("-", "")
+        key = self._normalize_name(name)
         return self.moves.get(key)
 
     def get_ability(self, name: str) -> dict | None:
@@ -94,7 +148,7 @@ class PokemonDataLoader:
             Ability data dict or None if not found
         """
         self.load_all()
-        key = name.lower().replace(" ", "").replace("-", "")
+        key = self._normalize_name(name)
         return self.abilities.get(key)
 
     def get_item(self, name: str) -> dict | None:
@@ -108,7 +162,7 @@ class PokemonDataLoader:
             Item data dict or None if not found
         """
         self.load_all()
-        key = name.lower().replace(" ", "").replace("-", "")
+        key = self._normalize_name(name)
         return self.items.get(key)
 
     def get_type_effectiveness(
