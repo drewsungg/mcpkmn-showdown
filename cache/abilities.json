@@ -1,0 +1,116 @@
+{
+  "aerilate": {
+    "id": "aerilate",
+    "name": "aerilate",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "embodyaspectcornerstone": {
+    "id": "embodyaspectcornerstone",
+    "name": "embodyaspectcornerstone",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "embodyaspecthearthflame": {
+    "id": "embodyaspecthearthflame",
+    "name": "embodyaspecthearthflame",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "embodyaspectteal": {
+    "id": "embodyaspectteal",
+    "name": "embodyaspectteal",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "embodyaspectwellspring": {
+    "id": "embodyaspectwellspring",
+    "name": "embodyaspectwellspring",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "frisk": {
+    "id": "frisk",
+    "name": "frisk",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "galvanize": {
+    "id": "galvanize",
+    "name": "galvanize",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "hungerswitch": {
+    "id": "hungerswitch",
+    "name": "hungerswitch",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "magicguard": {
+    "id": "magicguard",
+    "name": "magicguard",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "mirrorarmor": {
+    "id": "mirrorarmor",
+    "name": "mirrorarmor",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "normalize": {
+    "id": "normalize",
+    "name": "normalize",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "opportunist": {
+    "id": "opportunist",
+    "name": "opportunist",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "pixilate": {
+    "id": "pixilate",
+    "name": "pixilate",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "poisonpuppeteer": {
+    "id": "poisonpuppeteer",
+    "name": "poisonpuppeteer",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "condition": {
+    "id": "condition",
+    "name": "condition",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "refrigerate": {
+    "id": "refrigerate",
+    "name": "refrigerate",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "ripen": {
+    "id": "ripen",
+    "name": "ripen",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "stancechange": {
+    "id": "stancechange",
+    "name": "stancechange",
+    "desc": "",
+    "shortDesc": ""
+  },
+  "teraformzero": {
+    "id": "teraformzero",
+    "name": "teraformzero",
+    "desc": "",
+    "shortDesc": ""
+  }
+}

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcpkmn-showdown"
+version = "1.0.0"
+description = "Pokemon Showdown MCP Server - Pokemon data lookup tools for LLMs via Model Context Protocol"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Andrew Sung", email = "drewsungg@gmail.com" }
+]
+keywords = [
+    "pokemon",
+    "showdown",
+    "mcp",
+    "model-context-protocol",
+    "llm",
+    "claude",
+    "ai",
+    "competitive-pokemon"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/drewsungg/mcpkmn-showdown"
+Repository = "https://github.com/drewsungg/mcpkmn-showdown"
+Issues = "https://github.com/drewsungg/mcpkmn-showdown/issues"
+
+[project.scripts]
+mcpkmn-showdown = "src.pokemon_server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/cache",
+    "/README.md",
+    "/LICENSE",
+]
