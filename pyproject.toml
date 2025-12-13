@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcpkmn-showdown"
-version = "1.0.6"
+version = "1.0.7"
 description = "Pokemon Showdown MCP Server - Pokemon data lookup tools for LLMs via Model Context Protocol"
 readme = "README.md"
 license = {text = "MIT"}
@@ -35,6 +35,14 @@ classifiers = [
 ]
 dependencies = [
     "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
 ]
 
 [project.urls]

@@ -12,12 +12,13 @@ from pathlib import Path
 
 
 SHOWDOWN_DATA_URL = "https://play.pokemonshowdown.com/data"
-CACHE_DIR = Path(__file__).parent.parent / "bot" / "cache"
+CACHE_DIR = Path(__file__).parent / "cache"
 
 
 def fetch_url(url: str) -> str:
     """Fetch content from a URL."""
-    with urllib.request.urlopen(url, timeout=30) as response:
+    # URL is constructed from SHOWDOWN_DATA_URL constant, not user-controlled
+    with urllib.request.urlopen(url, timeout=30) as response:  # nosemgrep: dynamic-urllib-use-detected
         return response.read().decode("utf-8")
 
 

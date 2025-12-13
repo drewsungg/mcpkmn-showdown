@@ -44,3 +44,8 @@ htmlcov/
 
 # Type checking
 .mypy_cache/
+
+# Security scanning
+.semgrep/
+.semgrepignore
+semgrep-*.json

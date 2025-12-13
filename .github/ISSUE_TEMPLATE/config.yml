@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Pokemon Showdown
+    url: https://pokemonshowdown.com/
+    about: For questions about Pokemon mechanics or Showdown itself
+  - name: MCP Documentation
+    url: https://modelcontextprotocol.io/
+    about: For general MCP questions
