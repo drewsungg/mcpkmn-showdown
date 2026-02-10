@@ -92,6 +92,13 @@ Here are concrete workflows this MCP enables:
 | `search_priority_moves`     | Find priority moves                   | `min_priority: int`           |
 | `search_pokemon_by_ability` | Pokemon with a specific ability       | `ability: string`             |
 | `list_dangerous_abilities`  | Battle-critical abilities by category | `category: string`            |
+| `get_smogon_usage`          | Top Pokemon by usage in a format      | `format: string`              |
+| `get_smogon_sets`           | Competitive sets (moves, items, EVs)  | `pokemon`, `format`           |
+| `get_pokemon_counters`      | What checks/counters a Pokemon        | `pokemon`, `format`           |
+| `get_pokemon_teammates`     | Best teammates by co-occurrence       | `pokemon`, `format`           |
+| `search_pokemon_by_stat`    | Filter Pokemon by base stats          | `stat`, `min_value`, `max_value` |
+| `search_moves_by_effect`    | Find moves by strategic category      | `effect: string`              |
+| `get_format_info`           | Format rules and meta characteristics | `format: string`              |
 
 ---
 
@@ -288,6 +295,134 @@ List abilities that significantly impact battle outcomes.
 
 ---
 
+### `get_smogon_usage`
+
+Get the most-used Pokemon in a competitive format from Smogon stats.
+
+**Schema:**
+
+```json
+{
+  "format": "string",  // Format ID (e.g., "gen9ou", "gen9vgc2025")
+  "top_n": 20          // Number of results (default: 20)
+}
+```
+
+**Example:**
+
+```
+Input:  {"format": "gen9ou", "top_n": 5}
+Output:
+  1. Great Tusk (usage count: 619,002) — Top moves: Rapid Spin, Headlong Rush, Ice Spinner
+  2. Darkrai (usage count: 500,000) — Top moves: Dark Void, Dark Pulse
+  ...
+```
+
+---
+
+### `get_smogon_sets`
+
+Get competitive sets for a specific Pokemon: moves, items, abilities, EV spreads, Tera types, and teammates.
+
+**Schema:**
+
+```json
+{
+  "pokemon": "string",  // Pokemon name (e.g., "Great Tusk")
+  "format": "string"    // Format ID (e.g., "gen9ou")
+}
+```
+
+---
+
+### `get_pokemon_counters`
+
+Get what checks and counters a Pokemon in competitive play, with KO and switch-out rates.
+
+**Schema:**
+
+```json
+{
+  "pokemon": "string",  // Pokemon name
+  "format": "string"    // Format ID
+}
+```
+
+---
+
+### `get_pokemon_teammates`
+
+Get the best teammates for a Pokemon based on co-occurrence in competitive teams.
+
+**Schema:**
+
+```json
+{
+  "pokemon": "string",  // Pokemon name
+  "format": "string"    // Format ID
+}
+```
+
+---
+
+### `search_pokemon_by_stat`
+
+Find Pokemon filtered by base stat ranges. Useful for building teams around specific stat requirements (e.g., slow Pokemon for Trick Room, fast sweepers, bulky walls).
+
+**Schema:**
+
+```json
+{
+  "stat": "string",     // Stat: "hp", "atk", "def", "spa", "spd", "spe"
+  "min_value": 0,       // Minimum value (default: 0)
+  "max_value": 999,     // Maximum value (default: 999)
+  "types": ["string"],  // Optional type filter
+  "tier": "string"      // Optional tier filter (e.g., "OU")
+}
+```
+
+**Example:**
+
+```
+Input:  {"stat": "spe", "max_value": 30, "types": ["Steel"]}
+Output: Ferrothorn (Grass/Steel, Spe: 20), Stakataka (Rock/Steel, Spe: 13), ...
+```
+
+---
+
+### `search_moves_by_effect`
+
+Find moves by strategic category for team building.
+
+**Schema:**
+
+```json
+{
+  "effect": "string",    // Category (see below)
+  "move_type": "string"  // Optional type filter
+}
+```
+
+**Categories:** `spread`, `priority`, `recovery`, `setup`, `hazard`, `hazard_removal`, `weather`, `terrain`, `screen`, `pivot`, `speed_control`, `redirection`, `protect`
+
+---
+
+### `get_format_info`
+
+Get rules, clauses, bans, and meta characteristics for a competitive format.
+
+**Schema:**
+
+```json
+{
+  "format": "string"  // Format name (e.g., "gen9ou", "gen9vgc2025")
+}
+```
+
+**Supported formats:** gen9ou, gen9uu, gen9ubers, gen9vgc2025, gen9doublesou, gen9randombattle
+
+---
+
 ## Architecture
 
 ```
@@ -320,17 +455,14 @@ Pokemon Showdown doesn't have a REST API. Their data is served as minified JavaS
 | **Local JSON**      | Instant, offline, reliable — but data can go stale  |
 | **Live connection** | Always fresh — but slow, fragile, requires internet |
 
-For reference data (stats, moves, abilities), local is the right call. The data only changes with new games/DLC. For live features (ladder stats, ongoing battles), we'd need WebSocket connections — that's on the roadmap.
+For reference data (stats, moves, abilities), local is the right call. The data only changes with new games/DLC. Smogon usage stats are fetched live on first request and cached for 30 days (stats update monthly).
 
-**Data sources** (from [Pokemon Showdown](https://github.com/smogon/pokemon-showdown)):
+**Data sources:**
 
-- `pokedex.json` — 1,500+ Pokemon with stats, types, abilities
-- `moves_showdown.json` — 950+ moves with effects
-- `abilities_full.json` — 300+ abilities with descriptions
-- `items.json` — 580+ items with effects
-- `typechart.json` — Complete type effectiveness matrix
+- [Pokemon Showdown](https://github.com/smogon/pokemon-showdown) — `pokedex.json`, `moves_showdown.json`, `abilities_full.json`, `items.json`, `typechart.json`
+- [Smogon Stats](https://www.smogon.com/stats/) — Usage statistics, movesets, teammates, counters (fetched on demand, cached locally)
 
-To refresh the data: `python -m mcpkmn_showdown.data_fetcher`
+To refresh the static data: `python -m mcpkmn_showdown.data_fetcher`
 
 ---
 
@@ -353,16 +485,15 @@ To refresh the data: `python -m mcpkmn_showdown.data_fetcher`
 - [ ] Live battle integration (connect to a running Showdown battle)
 - [ ] Team import/export (paste Showdown format, get structured data)
 - [ ] Damage calculator integration
-- [ ] Format-specific tier lists and banlists
-- [ ] Usage statistics from Smogon
+- [x] ~~Format-specific tier lists and banlists~~ (`get_format_info`)
+- [x] ~~Usage statistics from Smogon~~ (`get_smogon_usage`, `get_smogon_sets`)
 
 **Help wanted — good first issues:**
 
-- [ ] Add `get_format` tool to explain format rules (OU, UU, etc.)
 - [ ] Add `search_pokemon_by_type` tool
-- [ ] Add `search_moves_by_type` tool
 - [ ] Improve form normalization (regional forms, Gigantamax, etc.)
 - [ ] Add more test coverage
+- [ ] Support more formats in `get_format_info`
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started.
 
