@@ -227,6 +227,217 @@ class PokemonDataLoader:
             if v.get("priority", 0) >= min_priority
         ]
 
+    def search_pokemon_by_stat(
+        self,
+        stat: str,
+        min_value: int = 0,
+        max_value: int = 999,
+        types: list[str] | None = None,
+        tier: str | None = None,
+    ) -> list[dict]:
+        """
+        Search Pokemon by base stat ranges and optional type/tier filters.
+
+        Args:
+            stat: Stat name (hp, atk, def, spa, spd, spe)
+            min_value: Minimum base stat value
+            max_value: Maximum base stat value
+            types: Optional list of types to filter by (Pokemon must have at least one)
+            tier: Optional tier filter (e.g., "OU", "UU")
+
+        Returns:
+            List of matching Pokemon dicts with id and name
+        """
+        self.load_all()
+        stat = stat.lower()
+        stat_key_map = {
+            "hp": "hp", "atk": "atk", "attack": "atk",
+            "def": "def", "defense": "def",
+            "spa": "spa", "spatk": "spa", "special_attack": "spa",
+            "spd": "spd", "spdef": "spd", "special_defense": "spd",
+            "spe": "spe", "speed": "spe",
+        }
+        stat_key = stat_key_map.get(stat, stat)
+        types_lower = [t.lower() for t in types] if types else None
+
+        results = []
+        for poke_id, poke_data in self.pokemon.items():
+            base_stats = poke_data.get("baseStats", {})
+            stat_val = base_stats.get(stat_key, 0)
+
+            if not (min_value <= stat_val <= max_value):
+                continue
+
+            if types_lower:
+                poke_types = [t.lower() for t in poke_data.get("types", [])]
+                if not any(t in poke_types for t in types_lower):
+                    continue
+
+            if tier:
+                poke_tier = poke_data.get("tier", "").lower()
+                if poke_tier != tier.lower():
+                    continue
+
+            results.append({
+                "id": poke_id,
+                "name": poke_data.get("name", poke_id),
+                "types": poke_data.get("types", []),
+                "tier": poke_data.get("tier", ""),
+                stat_key: stat_val,
+                "baseStats": base_stats,
+            })
+
+        results.sort(key=lambda p: p.get(stat_key, 0), reverse=(stat_key != "spe" or min_value > 50))
+        return results
+
+    # Move effect categories for search_moves_by_effect
+    MOVE_EFFECT_CATEGORIES: dict[str, dict[str, list[str]]] = {
+        "spread": {
+            "desc": "Moves that hit multiple targets",
+            "flags": [],
+            "targets": ["allAdjacentFoes", "allAdjacent", "all"],
+        },
+        "priority": {
+            "desc": "Moves with increased priority",
+            "flags": [],
+            "targets": [],
+        },
+        "recovery": {
+            "desc": "Moves that restore HP",
+            "keywords": ["heal", "recover", "restore", "drain"],
+            "moves": [
+                "recover", "softboiled", "roost", "moonlight", "morningsun",
+                "synthesis", "shoreup", "slackoff", "milkdrink", "wish",
+                "healorder", "junglehealing", "lunarblessing", "lifedew",
+                "strengthsap",
+            ],
+        },
+        "setup": {
+            "desc": "Stat-boosting moves",
+            "moves": [
+                "swordsdance", "nastyplot", "calmmind", "dragondance",
+                "bulkup", "irondefense", "amnesia", "agility", "rockpolish",
+                "shellsmash", "quiverdance", "coil", "curse",
+                "tailglow", "geomancy", "shiftgear", "tidyup",
+                "victorydance", "clangoroussoul", "noretreat",
+                "bellydrum", "filletaway",
+            ],
+        },
+        "hazard": {
+            "desc": "Entry hazard moves",
+            "moves": [
+                "stealthrock", "spikes", "toxicspikes", "stickyweb",
+                "caltrop",
+            ],
+        },
+        "hazard_removal": {
+            "desc": "Moves that remove entry hazards",
+            "moves": ["rapidspin", "defog", "courtchange", "tidyup", "mortalspin"],
+        },
+        "weather": {
+            "desc": "Weather-setting moves",
+            "moves": [
+                "sunnyday", "raindance", "sandstorm", "snowscape", "hail",
+            ],
+        },
+        "terrain": {
+            "desc": "Terrain-setting moves",
+            "moves": [
+                "electricterrain", "grassyterrain", "mistyterrain",
+                "psychicterrain",
+            ],
+        },
+        "screen": {
+            "desc": "Damage-reducing screens",
+            "moves": ["reflect", "lightscreen", "auroraveil"],
+        },
+        "pivot": {
+            "desc": "Moves that switch the user out",
+            "moves": [
+                "uturn", "voltswitch", "flipturn", "partingshot",
+                "batonpass", "teleport", "shedtail", "chillyreception",
+            ],
+        },
+        "speed_control": {
+            "desc": "Moves that affect speed order",
+            "moves": [
+                "tailwind", "trickroom", "icywind", "electroweb",
+                "stringshot", "stickyweb", "thunderwave", "glare",
+                "bulldoze", "rockslide", "scaryface",
+            ],
+        },
+        "redirection": {
+            "desc": "Moves that redirect attacks in doubles",
+            "moves": ["followme", "ragepowder", "spotlight", "allyswitch"],
+        },
+        "protect": {
+            "desc": "Protection moves",
+            "moves": [
+                "protect", "detect", "spikyshield", "kingsshield",
+                "banefulbunker", "obstruct", "silktrap", "burningbulwark",
+                "wideguard", "quickguard", "matblock",
+            ],
+        },
+    }
+
+    def search_moves_by_effect(
+        self, effect: str, move_type: str | None = None
+    ) -> list[dict]:
+        """
+        Search for moves by strategic effect category.
+
+        Args:
+            effect: Effect category (spread, priority, recovery, setup, hazard,
+                    hazard_removal, weather, terrain, screen, pivot, speed_control,
+                    redirection, protect)
+            move_type: Optional type filter (e.g., "fire")
+
+        Returns:
+            List of matching move dicts
+        """
+        self.load_all()
+        effect = effect.lower().replace(" ", "_")
+        category = self.MOVE_EFFECT_CATEGORIES.get(effect)
+        if category is None:
+            return []
+
+        type_lower = move_type.lower() if move_type else None
+        results = []
+
+        # For priority, use the priority field
+        if effect == "priority":
+            for move_id, move_data in self.moves.items():
+                if move_data.get("priority", 0) > 0:
+                    if type_lower and move_data.get("type", "").lower() != type_lower:
+                        continue
+                    results.append({"id": move_id, **move_data})
+            results.sort(key=lambda m: m.get("priority", 0), reverse=True)
+            return results
+
+        # For spread moves, check target field
+        if "targets" in category and category["targets"]:
+            for move_id, move_data in self.moves.items():
+                target = move_data.get("target", "")
+                if target in category["targets"]:
+                    if type_lower and move_data.get("type", "").lower() != type_lower:
+                        continue
+                    results.append({"id": move_id, **move_data})
+            results.sort(key=lambda m: m.get("basePower", 0), reverse=True)
+            return results
+
+        # For named move lists
+        move_ids = set(category.get("moves", []))
+        if not move_ids:
+            return []
+
+        for move_id, move_data in self.moves.items():
+            if move_id in move_ids:
+                if type_lower and move_data.get("type", "").lower() != type_lower:
+                    continue
+                results.append({"id": move_id, **move_data})
+
+        return results
+
 
 # Global instance
 _loader: PokemonDataLoader | None = None
