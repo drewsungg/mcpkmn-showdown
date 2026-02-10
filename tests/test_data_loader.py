@@ -164,3 +164,91 @@ class TestNameNormalization:
         """Test handling of Farfetch'd apostrophe."""
         poke = loader.get_pokemon("Farfetch'd")
         assert poke is not None
+
+
+class TestSearchPokemonByStat:
+    """Tests for searching Pokemon by base stats."""
+
+    @pytest.fixture
+    def loader(self):
+        return PokemonDataLoader()
+
+    def test_search_slow_pokemon(self, loader):
+        """Test finding slow Pokemon for Trick Room."""
+        results = loader.search_pokemon_by_stat("spe", min_value=1, max_value=30)
+        assert len(results) > 0
+        for poke in results:
+            assert poke["baseStats"].get("spe", 0) <= 30
+
+    def test_search_fast_pokemon(self, loader):
+        """Test finding fast sweepers."""
+        results = loader.search_pokemon_by_stat("spe", min_value=120)
+        assert len(results) > 0
+        for poke in results:
+            assert poke["baseStats"]["spe"] >= 120
+
+    def test_search_with_type_filter(self, loader):
+        """Test searching with type filter."""
+        results = loader.search_pokemon_by_stat("atk", min_value=100, types=["Dragon"])
+        assert len(results) > 0
+        for poke in results:
+            assert "Dragon" in poke["types"]
+            assert poke["baseStats"]["atk"] >= 100
+
+    def test_search_stat_aliases(self, loader):
+        """Test that stat aliases work."""
+        r1 = loader.search_pokemon_by_stat("speed", min_value=150)
+        r2 = loader.search_pokemon_by_stat("spe", min_value=150)
+        assert len(r1) == len(r2)
+
+
+class TestSearchMovesByEffect:
+    """Tests for searching moves by strategic effect."""
+
+    @pytest.fixture
+    def loader(self):
+        return PokemonDataLoader()
+
+    def test_search_spread_moves(self, loader):
+        """Test finding spread moves."""
+        results = loader.search_moves_by_effect("spread")
+        assert len(results) > 0
+        move_names = [m.get("name", "") for m in results]
+        assert "Earthquake" in move_names
+
+    def test_search_priority_moves(self, loader):
+        """Test finding priority moves via effect search."""
+        results = loader.search_moves_by_effect("priority")
+        assert len(results) > 0
+        for move in results:
+            assert move.get("priority", 0) > 0
+
+    def test_search_setup_moves(self, loader):
+        """Test finding setup moves."""
+        results = loader.search_moves_by_effect("setup")
+        move_names = [m.get("name", "") for m in results]
+        assert "Swords Dance" in move_names
+
+    def test_search_pivot_moves(self, loader):
+        """Test finding pivot moves."""
+        results = loader.search_moves_by_effect("pivot")
+        move_names = [m.get("name", "") for m in results]
+        assert "U-turn" in move_names
+
+    def test_search_hazard_moves(self, loader):
+        """Test finding entry hazard moves."""
+        results = loader.search_moves_by_effect("hazard")
+        move_names = [m.get("name", "") for m in results]
+        assert "Stealth Rock" in move_names
+
+    def test_search_with_type_filter(self, loader):
+        """Test effect search with type filter."""
+        results = loader.search_moves_by_effect("spread", move_type="ground")
+        assert len(results) > 0
+        for move in results:
+            assert move.get("type", "").lower() == "ground"
+
+    def test_search_invalid_effect(self, loader):
+        """Test that invalid effect returns empty."""
+        results = loader.search_moves_by_effect("nonexistent")
+        assert results == []
