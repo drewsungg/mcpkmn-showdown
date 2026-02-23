@@ -291,7 +291,7 @@ class PokemonDataLoader:
         return results
 
     # Move effect categories for search_moves_by_effect
-    MOVE_EFFECT_CATEGORIES: dict[str, dict[str, list[str]]] = {
+    MOVE_EFFECT_CATEGORIES: dict[str, dict[str, Any]] = {
         "spread": {
             "desc": "Moves that hit multiple targets",
             "flags": [],

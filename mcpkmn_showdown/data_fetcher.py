@@ -73,7 +73,7 @@ def parse_typescript_object(ts_content: str, var_name: str) -> dict:
 
     try:
         return json.loads(object_str)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         # Fall back to regex extraction
         return extract_entries_regex(ts_content, var_name)
 

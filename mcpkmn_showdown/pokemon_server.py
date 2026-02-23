@@ -640,46 +640,46 @@ Found {len(pokemon_list)} Pokemon:
         pokemon_name = arguments["pokemon"]
         format_id = arguments["format"]
         stats_loader = get_stats_loader()
-        poke = stats_loader.get_pokemon(pokemon_name, format_id)
+        poke_data = stats_loader.get_pokemon(pokemon_name, format_id)
 
-        if poke is None:
+        if poke_data is None:
             return [TextContent(type="text", text=f"No data found for '{pokemon_name}' in {format_id}.")]
 
-        lines = [f"## {poke.name} — Competitive Data ({format_id})\n"]
+        lines = [f"## {poke_data.name} — Competitive Data ({format_id})\n"]
 
-        if poke.abilities:
+        if poke_data.abilities:
             lines.append("### Abilities")
-            for ability, pct in sorted(poke.abilities.items(), key=lambda x: -x[1]):
-                lines.append(f"- {ability}: {pct:.1f}%")
+            for ab_name, pct in sorted(poke_data.abilities.items(), key=lambda x: -x[1]):
+                lines.append(f"- {ab_name}: {pct:.1f}%")
             lines.append("")
 
-        if poke.items:
+        if poke_data.items:
             lines.append("### Items")
-            for item, pct in sorted(poke.items.items(), key=lambda x: -x[1]):
-                lines.append(f"- {item}: {pct:.1f}%")
+            for it_name, pct in sorted(poke_data.items.items(), key=lambda x: -x[1]):
+                lines.append(f"- {it_name}: {pct:.1f}%")
             lines.append("")
 
-        if poke.moves:
+        if poke_data.moves:
             lines.append("### Moves")
-            for move, pct in sorted(poke.moves.items(), key=lambda x: -x[1]):
-                lines.append(f"- {move}: {pct:.1f}%")
+            for mv_name, pct in sorted(poke_data.moves.items(), key=lambda x: -x[1]):
+                lines.append(f"- {mv_name}: {pct:.1f}%")
             lines.append("")
 
-        if poke.spreads:
+        if poke_data.spreads:
             lines.append("### EV Spreads")
-            for spread, pct in sorted(poke.spreads.items(), key=lambda x: -x[1])[:5]:
+            for spread, pct in sorted(poke_data.spreads.items(), key=lambda x: -x[1])[:5]:
                 lines.append(f"- {spread}: {pct:.1f}%")
             lines.append("")
 
-        if poke.tera_types:
+        if poke_data.tera_types:
             lines.append("### Tera Types")
-            for tera, pct in sorted(poke.tera_types.items(), key=lambda x: -x[1]):
+            for tera, pct in sorted(poke_data.tera_types.items(), key=lambda x: -x[1]):
                 lines.append(f"- {tera}: {pct:.1f}%")
             lines.append("")
 
-        if poke.teammates:
+        if poke_data.teammates:
             lines.append("### Common Teammates")
-            for teammate, pct in sorted(poke.teammates.items(), key=lambda x: -x[1])[:10]:
+            for teammate, pct in sorted(poke_data.teammates.items(), key=lambda x: -x[1])[:10]:
                 lines.append(f"- {teammate}: {pct:.1f}%")
 
         return [TextContent(type="text", text="\n".join(lines))]
@@ -741,11 +741,11 @@ Found {len(pokemon_list)} Pokemon:
             lines.append(f"**Tier:** {tier}")
         lines.append("")
 
-        for poke in shown:
-            stats = poke.get("baseStats", {})
-            stat_line = f"HP:{stats.get('hp','?')} Atk:{stats.get('atk','?')} Def:{stats.get('def','?')} SpA:{stats.get('spa','?')} SpD:{stats.get('spd','?')} Spe:{stats.get('spe','?')}"
-            types_str = "/".join(poke.get("types", []))
-            lines.append(f"- **{poke['name']}** ({types_str}) [{poke.get('tier', '?')}] — {stat_line}")
+        for entry in shown:
+            base_stats = entry.get("baseStats", {})
+            stat_line = f"HP:{base_stats.get('hp','?')} Atk:{base_stats.get('atk','?')} Def:{base_stats.get('def','?')} SpA:{base_stats.get('spa','?')} SpD:{base_stats.get('spd','?')} Spe:{base_stats.get('spe','?')}"
+            types_str = "/".join(entry.get("types", []))
+            lines.append(f"- **{entry['name']}** ({types_str}) [{entry.get('tier', '?')}] — {stat_line}")
 
         if len(results) > 30:
             lines.append(f"\n... and {len(results) - 30} more.")
@@ -790,7 +790,7 @@ Found {len(pokemon_list)} Pokemon:
     elif name == "get_format_info":
         format_id = arguments["format"].lower()
 
-        FORMAT_INFO = {
+        FORMAT_INFO: dict[str, dict[str, Any]] = {
             "gen9ou": {
                 "name": "Generation 9 OverUsed (OU)",
                 "game": "Scarlet & Violet",
