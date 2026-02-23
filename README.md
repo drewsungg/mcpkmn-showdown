@@ -412,6 +412,5 @@ MIT License — see [LICENSE](LICENSE) for details.
 ## Author
 
 **Andrew Sung** 
-
-— [@drewsungg](https://github.com/drewsungg)
+- [@drewsungg](https://github.com/drewsungg)
 - [drewsung@stanford.edu](mailto:drewsung@stanford.edu)
