@@ -384,9 +384,9 @@ npx @modelcontextprotocol/inspector mcpkmn-showdown  # Interactive testing
 
 ---
 
-## We Want Your Feedback
+## I Want Your Feedback!
 
-If you try this out, please let us know:
+If you try this out, please let me know:
 
 1. **Is the tool naming/schema intuitive for an agent?** Would different boundaries help?
 2. **What's missing for your use case?** Teambuilding? Laddering? Replay analysis? Eval harness?
@@ -411,4 +411,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Author
 
-**Andrew Sung** — [@drewsungg](https://github.com/drewsungg)
+**Andrew Sung** 
+
+— [@drewsungg](https://github.com/drewsungg)
+- [drewsung@stanford.edu](mailto:drewsung@stanford.edu)
