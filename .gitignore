@@ -32,6 +32,7 @@ env/
 *.swp
 *.swo
 *~
+.qodo
 
 # OS
 .DS_Store

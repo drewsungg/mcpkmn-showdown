@@ -48,15 +48,11 @@ Looking for something to work on? Here are beginner-friendly contributions:
 
 ### Add a new tool
 
-1. **`search_pokemon_by_type`** — Find all Pokemon of a given type
-   - Input: `{"type": "dragon"}` or `{"types": ["dragon", "flying"]}`
-   - Output: List of matching Pokemon
-
-2. **`search_moves_by_type`** — Find all moves of a given type
+1. **`search_moves_by_type`** — Find all moves of a given type
    - Input: `{"type": "fire", "category": "physical"}`
    - Output: List of matching moves
 
-3. **`get_format`** — Explain format rules (OU, UU, Ubers, etc.)
+2. **`get_format`** — Explain format rules (OU, UU, Ubers, etc.)
    - Input: `{"format": "ou"}`
    - Output: Banned Pokemon, clauses, description
 

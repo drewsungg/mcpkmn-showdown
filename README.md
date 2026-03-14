@@ -91,6 +91,7 @@ Here are concrete workflows this MCP enables:
 | `get_type_effectiveness`    | Damage multiplier calculation         | `attack_type`, `defend_types` |
 | `search_priority_moves`     | Find priority moves                   | `min_priority: int`           |
 | `search_pokemon_by_ability` | Pokemon with a specific ability       | `ability: string`             |
+| `search_pokemon_by_type`    | Pokemon with a specific type(s)       | `types: array[string]`        |
 | `list_dangerous_abilities`  | Battle-critical abilities by category | `category: string`            |
 | `get_smogon_usage`          | Top Pokemon by usage in a format      | `format: string`              |
 | `get_smogon_sets`           | Competitive sets (moves, items, EVs)  | `pokemon`, `format`           |
@@ -267,6 +268,26 @@ Find all Pokemon with a specific ability.
 Input:  {"ability": "levitate"}
 Output: Azelf, Bronzong, Cresselia, Eelektross, Flygon, Gengar,
         Hydreigon, Latias, Latios, Mismagius, Rotom, Uxie, Vikavolt...
+```
+
+---
+
+### `search_pokemon_by_type
+
+Find all pokemon with a specified type(s).
+
+```json
+{
+  "types": "array['string']" // One or two types (e.g., ["fire"] or ["fire", "flying"])
+}
+```
+
+**Example**
+
+```
+Input: {"types": "grass"}
+Output: Abomasnow, Abomasnow-Mega, Amoonguss, Appletun, Appletun-Gmax, 
+        Applin, Arboliva, Arceus-Grass, Bayleef, Bellossom, Bellsprout...
 ```
 
 ---
@@ -490,7 +511,7 @@ To refresh the static data: `python -m mcpkmn_showdown.data_fetcher`
 
 **Help wanted — good first issues:**
 
-- [ ] Add `search_pokemon_by_type` tool
+- [x] ~~Add `search_pokemon_by_type` tool~~ (`search_pokemon_by_type`)
 - [ ] Improve form normalization (regional forms, Gigantamax, etc.)
 - [ ] Add more test coverage
 - [ ] Support more formats in `get_format_info`

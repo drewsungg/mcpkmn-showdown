@@ -4,8 +4,10 @@ Data Loader for Pokemon MCP Server
 Loads and indexes Pokemon data from cache files for efficient lookups.
 """
 
+from collections import Counter
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 
@@ -207,7 +209,22 @@ class PokemonDataLoader:
                     break
 
         return result
+    
+    def get_pokemon_with_type(self, type: list[str]) -> list[str]:
+        """Find all Pokemon that have a specific type or combination of types."""
+        self.load_all()
 
+        type = [t.lower() for t in type]
+        result = []
+
+        for poke_id, poke_data in self.pokemon.items():
+            types = poke_data.get("types", [])
+            types = [t.lower() for t in types]
+            if Counter(type) == Counter(types) or type[0] in types:
+                result.append(poke_data.get("name", poke_id))
+        
+        return result
+    
     def search_moves_by_type(self, move_type: str) -> list[dict]:
         """Find all moves of a specific type."""
         self.load_all()

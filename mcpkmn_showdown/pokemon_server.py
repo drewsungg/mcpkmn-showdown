@@ -13,6 +13,7 @@ Tools:
 - get_type_effectiveness: Calculate type matchup multipliers
 - search_priority_moves: Find all priority moves
 - search_pokemon_by_ability: Find Pokemon with a specific ability
+- search_pokemon_by_type: Find Pokemon with a specific type(s)
 - list_dangerous_abilities: List battle-critical abilities
 - get_smogon_usage: Top Pokemon by usage in a format
 - get_smogon_sets: Competitive sets for a Pokemon
@@ -295,6 +296,25 @@ async def list_tools() -> list[Tool]:
             }
         ),
         Tool(
+            name="search_pokemon_by_type",
+            description="Find all Pokemon that are a specific type(s).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                "types": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "description": "Up to 2 types (e.g., ['fire', 'water'])"
+                    }
+                },
+                "required": ["types"]
+            }
+        ),
+        Tool(
             name="list_dangerous_abilities",
             description="List abilities that can significantly affect battle outcomes (immunities, damage reduction, status reflection, etc.)",
             inputSchema={
@@ -537,9 +557,30 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
 
         response = f"""## Pokemon with {ability.title()}
 
+                    Found {len(pokemon_list)} Pokemon:
+                    {', '.join(sorted(pokemon_list)[:50])}
+                    """
+        
+        if len(pokemon_list) > 50:
+            response += f"\n... and {len(pokemon_list) - 50} more."
+
+        return [TextContent(type="text", text=response)]
+
+    elif name == "search_pokemon_by_type":
+        type = arguments["types"]
+        pokemon_list = loader.get_pokemon_with_type(type)
+
+        if not pokemon_list:
+            return [TextContent(type="text", text=f"No Pokemon found with type '{type}'.")]
+
+        type_display = "/".join(t for t in type)
+
+        response = f"""## Pokemon that are {type_display} types
+
 Found {len(pokemon_list)} Pokemon:
 {', '.join(sorted(pokemon_list)[:50])}
 """
+        
         if len(pokemon_list) > 50:
             response += f"\n... and {len(pokemon_list) - 50} more."
 
