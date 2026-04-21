@@ -120,7 +120,6 @@ def extract_entries_regex(ts_content: str, var_name: str) -> dict:
 
         if entry.get("name") or entry.get("desc"):
             result[entry_id] = entry
-    # print(result)
     return result
 
 
